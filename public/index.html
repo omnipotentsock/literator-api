@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Literator API</title>
+
+    <script>
+        async function fetchDB() {
+            try{
+                const response = await fetch('/api/users');
+                const todos = await response.json();
+            }
+            catch(error){
+                console.log("Well that didn't work.");
+            }
+        }
+        window.onload = fetchDB;
+    </script>
+</head>
+<body>
+    <h1>Youkouso, watashi wa api endpointo</h1>
+</body>
+</html>
