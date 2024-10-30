@@ -10,6 +10,7 @@ const bodyParser = require('body-parser')
 const { CloudantV1 } = require('@ibm-cloud/cloudant')
 const client = CloudantV1.newInstance()
 const USERDB = 'users'
+const STORYDB = 'stories'
 
 // constants
 const PORT = 8080
@@ -31,6 +32,16 @@ app.post('/api/register', async (req, res) => {
   })
 
   res.send(response)
+})
+
+app.post('/api/stories/addstoryboard', async (req, res) => {
+  console.log("POST /api/stories/addstoryboard");
+  const storyboard = req.body
+
+  const response = await client.postDocument({
+    db: STORYDB,
+    document: storyboard
+  })
 })
 
 // GET /users endpoint
@@ -143,9 +154,28 @@ const populateUsers = async function () {
   
 }
 
+const createStoryboards = async function() {
+  try {
+    await client.getDatabaseInformation({db: STORYDB})
+    console.log("Storyboard DB exists");
+    return
+  }
+  catch(error){
+    console.log("Database DNE, creating storyboard database...");    
+  }
+
+  try {
+    await client.putDatabase({db: STORYDB})
+  } catch (error) {
+    console.log("Error creating database lol haha get rekt git pwnde");
+    
+  }
+}
+
 const main = async function () {
 
-  await populateUsers()
+  await populateUsers();
+  await createStoryboards();
 
   // start the webserver
   app.listen(PORT, HOST)
